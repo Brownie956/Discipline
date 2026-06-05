@@ -7,5 +7,6 @@ data class Game(
     val name: String,
     val state: GameState,
     val createdDate: LocalDate,
+    val status: GameStatus = GameStatus.ACTIVE,
     val endedDate: LocalDate? = null
 )

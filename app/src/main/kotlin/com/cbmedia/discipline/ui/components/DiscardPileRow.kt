@@ -38,7 +38,7 @@ fun DiscardPileRow(
             Box(
                 modifier = Modifier
                     .size(18.dp)
-                    .background(card.uiColor, CircleShape)
+                    .background(card.primaryColor, CircleShape)
             )
 
             Spacer(Modifier.width(12.dp))

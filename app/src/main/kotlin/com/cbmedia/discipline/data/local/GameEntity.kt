@@ -15,5 +15,6 @@ data class GameEntity(
     val lastDrawDate: Long?,
     val freezeEndsOn: Long?,
     val createdDate: Long,
+    val status: String,
     val endedDate: Long?
 )

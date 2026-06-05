@@ -175,7 +175,7 @@ fun ConfigScreen(
             ) { (cardType, count) ->
                 CardCountSelector(
                     title = cardType.displayName,
-                    color = cardType.uiColor,
+                    color = cardType.primaryColor,
                     count = count,
                     onIncrement = { onIncrement(cardType) },
                     onDecrement = { onDecrement(cardType) }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface GameDao {
 
-    @Query("SELECT * FROM games WHERE endedDate IS NULL ORDER BY createdDate DESC")
+    @Query("SELECT * FROM games WHERE status = 'ACTIVE' ORDER BY createdDate DESC")
     fun observeActiveGames(): Flow<List<GameEntity>>
 
     @Query("SELECT * FROM games WHERE id = :gameId")

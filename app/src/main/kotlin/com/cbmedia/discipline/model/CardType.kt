@@ -5,46 +5,55 @@ import androidx.compose.ui.graphics.Color
 enum class CardType(
     val displayName: String,
     val description: String,
-    val uiColor: Color
+    val primaryColor: Color,
+    val secondaryColor: Color,
 ) {
     GREEN(
         displayName = "Green",
         description = "1 day subtracted from days remaining",
-        uiColor = Color(0xFF008500)
+        primaryColor = Color(0xFF008500),
+        secondaryColor = Color(0xFFFFFFFF)
     ),
     RED(
         displayName = "Red",
         description = "3 days added to days remaining",
-        uiColor = Color(0xFFA10000)
+        primaryColor = Color(0xFFA10000),
+        secondaryColor = Color(0xFFFFFFFF)
     ),
     STICKY(
         displayName = "Sticky",
         description = "3 days added to days remaining",
-        uiColor = Color(0xFF460505)
+        primaryColor = Color(0xFF460505),
+        secondaryColor = Color(0xFFFFFFFF)
     ),
     YELLOW(
         displayName = "Yellow",
         description = "3 additional RED cards added into deck",
-        uiColor = Color(0xFFCCCC00)
+        primaryColor = Color(0xFFCCCC00),
+        secondaryColor = Color(0xFF000000)
     ),
     RESET(
         displayName = "Reset",
         description = "Deck reset and shuffled (excluding the RESET card)",
-        uiColor = Color(0xFF002748)
+        primaryColor = Color(0xFF002748),
+        secondaryColor = Color(0xFFFFFFFF)
     ),
     DOUBLE(
         displayName = "Double",
         description = "Number of RED and YELLOW cards in deck doubled",
-        uiColor = Color(0xFF480048)
+        primaryColor = Color(0xFF480048),
+        secondaryColor = Color(0xFFFFFFFF)
     ),
     FREEZE(
         displayName = "Freeze",
         description = "Countdown and deck frozen",
-        uiColor = Color(0xFF396185)
+        primaryColor = Color(0xFF396185),
+        secondaryColor = Color(0xFF00344D)
     ),
     ARCTIC(
         displayName = "Arctic",
         description = "Countdown and deck frozen",
-        uiColor = Color(0xFF6C91C0)
+        primaryColor = Color(0xFF6C91C0),
+        secondaryColor = Color(0xFF00344D)
     )
 }

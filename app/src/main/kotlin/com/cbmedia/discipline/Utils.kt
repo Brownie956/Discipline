@@ -22,3 +22,12 @@ fun Game.toSummary(): GameSummary =
         lastDrawnCard = state.lastDrawnCard,
         freezeEndsOn = state.freezeEndsOn
     )
+
+fun Color.inverted(): Color {
+    return Color(
+        red = 1f - red,
+        green = 1f - green,
+        blue = 1f - blue,
+        alpha = alpha
+    )
+}

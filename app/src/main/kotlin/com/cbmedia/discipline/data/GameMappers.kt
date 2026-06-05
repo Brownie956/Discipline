@@ -4,6 +4,7 @@ import com.cbmedia.discipline.data.local.GameEntity
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
+import com.cbmedia.discipline.model.GameStatus
 import java.time.LocalDate
 
 fun Game.toEntity(): GameEntity {
@@ -17,6 +18,7 @@ fun Game.toEntity(): GameEntity {
         lastDrawDate = state.lastDrawDate?.toEpochDay(),
         freezeEndsOn = state.freezeEndsOn?.toEpochDay(),
         createdDate = createdDate.toEpochDay(),
+        status = status.name,
         endedDate = endedDate?.toEpochDay()
     )
 }
@@ -34,6 +36,7 @@ fun GameEntity.toGame(): Game {
             freezeEndsOn = freezeEndsOn?.let(LocalDate::ofEpochDay)
         ),
         createdDate = LocalDate.ofEpochDay(createdDate),
+        status = GameStatus.valueOf(status),
         endedDate = endedDate?.let(LocalDate::ofEpochDay)
     )
 }

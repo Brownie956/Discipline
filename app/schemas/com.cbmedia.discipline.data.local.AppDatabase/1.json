@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fe79e03d897bd0c3e9d1102c2e6612b1",
+    "identityHash": "ad01f780075ce4549c2921c2985bbb88",
     "entities": [
       {
         "tableName": "games",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `remainingDays` INTEGER NOT NULL, `deck` TEXT NOT NULL, `discardPile` TEXT NOT NULL, `lastDrawnCard` TEXT, `lastDrawDate` INTEGER, `freezeEndsOn` INTEGER, `createdDate` INTEGER NOT NULL, `endedDate` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `remainingDays` INTEGER NOT NULL, `deck` TEXT NOT NULL, `discardPile` TEXT NOT NULL, `lastDrawnCard` TEXT, `lastDrawDate` INTEGER, `freezeEndsOn` INTEGER, `createdDate` INTEGER NOT NULL, `status` TEXT NOT NULL, `endedDate` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -60,6 +60,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "endedDate",
             "columnName": "endedDate",
             "affinity": "INTEGER"
@@ -75,7 +81,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fe79e03d897bd0c3e9d1102c2e6612b1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ad01f780075ce4549c2921c2985bbb88')"
     ]
   }
 }

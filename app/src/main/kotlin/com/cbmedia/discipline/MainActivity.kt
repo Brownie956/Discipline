@@ -105,11 +105,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         val game by viewModel.game.collectAsStateWithLifecycle()
-                        val state = game?.state
 
-                        if (state != null) {
+                        game?.let { currentGame ->
                             GameScreen(
-                                state = state,
+                                game = currentGame,
                                 onDrawCard = viewModel::drawCard,
                                 onEndGameEarly = {
                                     viewModel.endGameEarly()

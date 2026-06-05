@@ -6,6 +6,7 @@ import com.cbmedia.discipline.GameEngine
 import com.cbmedia.discipline.data.GameRepository
 import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
+import com.cbmedia.discipline.model.GameStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -47,12 +48,21 @@ class GameViewModel(
 
         viewModelScope.launch {
             val result = GameEngine.drawCard(currentGame.state)
+            val updatedState = result.newState
 
-            repository.updateGame(
+            val updatedGame = if (updatedState.remainingDays <= 0) {
                 currentGame.copy(
-                    state = result.newState
+                    state = updatedState.copy(remainingDays = 0),
+                    status = GameStatus.COMPLETED,
+                    endedDate = LocalDate.now()
                 )
-            )
+            } else {
+                currentGame.copy(
+                    state = updatedState
+                )
+            }
+
+            repository.updateGame(updatedGame)
         }
     }
 
@@ -62,6 +72,7 @@ class GameViewModel(
         viewModelScope.launch {
             repository.updateGame(
                 currentGame.copy(
+                    status = GameStatus.ABANDONED,
                     endedDate = LocalDate.now()
                 )
             )

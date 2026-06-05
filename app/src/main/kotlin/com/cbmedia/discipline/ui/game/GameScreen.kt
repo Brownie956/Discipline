@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,22 +27,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.IceBlue
 import com.cbmedia.discipline.IceText
+import com.cbmedia.discipline.inverted
 import com.cbmedia.discipline.model.CardType
+import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
+import com.cbmedia.discipline.model.GameStatus
 import com.cbmedia.discipline.toUKFormat
 import com.cbmedia.discipline.ui.components.DiscardPileRow
 import com.cbmedia.discipline.ui.components.GameInfoCard
 import java.time.LocalDate
+import java.util.Locale.getDefault
 
 @Composable
 fun GameScreen(
-    state: GameState,
+    game: Game,
     onDrawCard: () -> Unit,
     onEndGameEarly: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val state = game.state
+    val isGameActive = game.status == GameStatus.ACTIVE
+
     val isFrozen = state.freezeEndsOn?.let { LocalDate.now() <= it } == true
-    val canDraw = state.deck.isNotEmpty() &&
+
+    val canDraw = isGameActive &&
+            state.deck.isNotEmpty() &&
             state.lastDrawDate != LocalDate.now() &&
             !isFrozen
 
@@ -53,17 +61,22 @@ fun GameScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
                     onClick = onDrawCard,
                     enabled = canDraw,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        disabledContainerColor = IceBlue,
-                        disabledContentColor = IceText
-                    ),
+                    colors = if (isFrozen) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            disabledContainerColor = IceBlue,
+                            disabledContentColor = IceText
+                        )
+                    } else {
+                        ButtonDefaults.buttonColors()
+                    },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
@@ -76,10 +89,9 @@ fun GameScreen(
                     Text(if (isFrozen) "Frozen Until ${state.freezeEndsOn.toUKFormat()}" else "Draw Card")
                 }
 
-                Spacer(Modifier.height(8.dp))
-
                 OutlinedButton(
                     onClick = onEndGameEarly,
+                    enabled = isGameActive,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("End Game Early")
@@ -97,22 +109,31 @@ fun GameScreen(
         ) {
 
             item {
-                Text(
-                    text = "Days Remaining",
-                    style = MaterialTheme.typography.titleMedium
-                )
+                if (isGameActive) {
+                    Text(
+                        text = "Days Remaining",
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
-                Text(
-                    text = state.remainingDays.toString(),
-                    style = MaterialTheme.typography.displayLarge
-                )
+                    Text(
+                        text = state.remainingDays.toString(),
+                        style = MaterialTheme.typography.displayLarge
+                    )
+                } else {
+                    Text(
+                        text = "Game ${game.status.toString().lowercase(getDefault())}",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
             }
 
             item {
                 GameInfoCard(
                     title = "Last Card Drawn",
                     card = state.lastDrawnCard?.displayName ?: "No card drawn yet",
-                    cardDescription = state.lastDrawnCard?.description
+                    cardDescription = state.lastDrawnCard?.description,
+                    containerColor = state.lastDrawnCard?.primaryColor,
+                    contentColor = state.lastDrawnCard?.secondaryColor
                 )
             }
 
@@ -144,30 +165,37 @@ fun GameScreen(
 @Preview(showBackground = true)
 @Composable
 private fun GameScreenPreview() {
+    val exampleGame = Game(
+        id = 12,
+        name = "No Chocolate",
+        state = GameState(
+            remainingDays = 24,
+            deck = listOf(
+                CardType.GREEN,
+                CardType.RED,
+                CardType.STICKY,
+                CardType.ARCTIC
+            ),
+            discardPile = listOf(
+                CardType.GREEN,
+                CardType.RED,
+                CardType.STICKY,
+                CardType.YELLOW,
+                CardType.RESET,
+                CardType.DOUBLE,
+                CardType.FREEZE,
+                CardType.ARCTIC,
+            ),
+            lastDrawnCard = CardType.DOUBLE,
+            lastDrawDate = LocalDate.now().minusDays(1),
+            freezeEndsOn = null
+        ),
+        createdDate = LocalDate.now()
+    )
+
     MaterialTheme {
         GameScreen(
-            state = GameState(
-                remainingDays = 24,
-                deck = listOf(
-                    CardType.GREEN,
-                    CardType.RED,
-                    CardType.STICKY,
-                    CardType.ARCTIC
-                ),
-                discardPile = listOf(
-                    CardType.GREEN,
-                    CardType.RED,
-                    CardType.STICKY,
-                    CardType.YELLOW,
-                    CardType.RESET,
-                    CardType.DOUBLE,
-                    CardType.FREEZE,
-                    CardType.ARCTIC,
-                ),
-                lastDrawnCard = CardType.DOUBLE,
-                lastDrawDate = LocalDate.now().minusDays(1),
-                freezeEndsOn = null
-            ),
+            game = exampleGame,
             onDrawCard = {},
             onEndGameEarly = {}
         )
@@ -177,30 +205,78 @@ private fun GameScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun GameScreenFrozenPreview() {
+    val exampleGame = Game(
+        id = 12,
+        name = "No Chocolate",
+        state = GameState(
+            remainingDays = 24,
+            deck = listOf(
+                CardType.GREEN,
+                CardType.RED,
+                CardType.STICKY,
+                CardType.ARCTIC
+            ),
+            discardPile = listOf(
+                CardType.GREEN,
+                CardType.RED,
+                CardType.STICKY,
+                CardType.YELLOW,
+                CardType.RESET,
+                CardType.DOUBLE,
+                CardType.FREEZE,
+                CardType.ARCTIC,
+            ),
+            lastDrawnCard = CardType.FREEZE,
+            lastDrawDate = LocalDate.now().minusDays(1),
+            freezeEndsOn = LocalDate.now().plusDays(3)
+        ),
+        createdDate = LocalDate.now()
+    )
+
     MaterialTheme {
         GameScreen(
-            state = GameState(
-                remainingDays = 24,
-                deck = listOf(
-                    CardType.GREEN,
-                    CardType.RED,
-                    CardType.STICKY,
-                    CardType.ARCTIC
-                ),
-                discardPile = listOf(
-                    CardType.GREEN,
-                    CardType.RED,
-                    CardType.STICKY,
-                    CardType.YELLOW,
-                    CardType.RESET,
-                    CardType.DOUBLE,
-                    CardType.FREEZE,
-                    CardType.ARCTIC,
-                ),
-                lastDrawnCard = CardType.FREEZE,
-                lastDrawDate = LocalDate.now().minusDays(1),
-                freezeEndsOn = LocalDate.now().plusDays(3)
+            game = exampleGame,
+            onDrawCard = {},
+            onEndGameEarly = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GameScreenCompletedPreview() {
+    val exampleGame = Game(
+        id = 12,
+        name = "No Chocolate",
+        state = GameState(
+            remainingDays = 24,
+            deck = listOf(
+                CardType.GREEN,
+                CardType.RED,
+                CardType.STICKY,
+                CardType.ARCTIC
             ),
+            discardPile = listOf(
+                CardType.GREEN,
+                CardType.RED,
+                CardType.STICKY,
+                CardType.YELLOW,
+                CardType.RESET,
+                CardType.DOUBLE,
+                CardType.FREEZE,
+                CardType.ARCTIC,
+            ),
+            lastDrawnCard = CardType.DOUBLE,
+            lastDrawDate = LocalDate.now().minusDays(1),
+            freezeEndsOn = null
+        ),
+        createdDate = LocalDate.now(),
+        status = GameStatus.COMPLETED
+    )
+
+    MaterialTheme {
+        GameScreen(
+            game = exampleGame,
             onDrawCard = {},
             onEndGameEarly = {}
         )
