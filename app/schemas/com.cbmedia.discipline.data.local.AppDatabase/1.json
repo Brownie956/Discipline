@@ -1,0 +1,81 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "fe79e03d897bd0c3e9d1102c2e6612b1",
+    "entities": [
+      {
+        "tableName": "games",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `remainingDays` INTEGER NOT NULL, `deck` TEXT NOT NULL, `discardPile` TEXT NOT NULL, `lastDrawnCard` TEXT, `lastDrawDate` INTEGER, `freezeEndsOn` INTEGER, `createdDate` INTEGER NOT NULL, `endedDate` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remainingDays",
+            "columnName": "remainingDays",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deck",
+            "columnName": "deck",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "discardPile",
+            "columnName": "discardPile",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastDrawnCard",
+            "columnName": "lastDrawnCard",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastDrawDate",
+            "columnName": "lastDrawDate",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "freezeEndsOn",
+            "columnName": "freezeEndsOn",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "createdDate",
+            "columnName": "createdDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedDate",
+            "columnName": "endedDate",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fe79e03d897bd0c3e9d1102c2e6612b1')"
+    ]
+  }
+}
