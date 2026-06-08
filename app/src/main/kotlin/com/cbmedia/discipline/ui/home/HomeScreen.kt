@@ -75,18 +75,14 @@ fun HomeScreen(
                 }
             }
 
-            item {
-                Text(
-                    text = "Completed Games",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-            }
-
-            if (activeGames.isEmpty()) {
+            if (completedGames.isNotEmpty()) {
                 item {
-                    EmptyGamesSummaryCard()
+                    Text(
+                        text = "Completed Games",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
                 }
-            } else {
+
                 items(
                     items = completedGames,
                     key = { it.id }
@@ -98,18 +94,14 @@ fun HomeScreen(
                 }
             }
 
-            item {
-                Text(
-                    text = "Abandoned Games",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-            }
-
-            if (activeGames.isEmpty()) {
+            if (abandonedGames.isNotEmpty()) {
                 item {
-                    EmptyGamesSummaryCard()
+                    Text(
+                        text = "Abandoned Games",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
                 }
-            } else {
+
                 items(
                     items = abandonedGames,
                     key = { it.id }
