@@ -58,7 +58,8 @@ class MainActivity : ComponentActivity() {
                             },
                             onCreateNewGameClick = {
                                 navController.navigate(Screen.Config.route)
-                            }
+                            },
+                            onDeleteGameClick = viewModel::deleteGame
                         )
                     }
 

@@ -8,12 +8,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,8 +36,46 @@ fun HomeScreen(
     abandonedGames: List<GameSummary>,
     onGameClick: (Long) -> Unit,
     onCreateNewGameClick: () -> Unit,
+    onDeleteGameClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var gamePendingDelete by remember {
+        mutableStateOf<GameSummary?>(null)
+    }
+
+    gamePendingDelete?.let { game ->
+        AlertDialog(
+            onDismissRequest = {
+                gamePendingDelete = null
+            },
+            title = {
+                Text("Delete game?")
+            },
+            text = {
+                Text("Are you sure you want to delete \"${game.name}\"? This cannot be undone.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteGameClick(game.id)
+                        gamePendingDelete = null
+                    }
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        gamePendingDelete = null
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -70,7 +114,8 @@ fun HomeScreen(
                 ) { game ->
                     GameSummaryCard(
                         game = game,
-                        onClick = { onGameClick(game.id) }
+                        onClick = { onGameClick(game.id) },
+                        onDeleteClick = { gamePendingDelete = game }
                     )
                 }
             }
@@ -89,7 +134,8 @@ fun HomeScreen(
                 ) { game ->
                     GameSummaryCard(
                         game = game,
-                        onClick = { onGameClick(game.id) }
+                        onClick = { onGameClick(game.id) },
+                        onDeleteClick = { gamePendingDelete = game }
                     )
                 }
             }
@@ -108,7 +154,8 @@ fun HomeScreen(
                 ) { game ->
                     GameSummaryCard(
                         game = game,
-                        onClick = { onGameClick(game.id) }
+                        onClick = { onGameClick(game.id) },
+                        onDeleteClick = { gamePendingDelete = game }
                     )
                 }
             }
@@ -165,7 +212,8 @@ private fun HomeScreenPreview() {
                 ),
             ),
             onGameClick = {},
-            onCreateNewGameClick = {}
+            onCreateNewGameClick = {},
+            onDeleteGameClick = {}
         )
     }
 }

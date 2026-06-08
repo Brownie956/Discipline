@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: GameRepository
@@ -41,4 +42,9 @@ class HomeViewModel(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
+
+    fun deleteGame(gameId: Long) =
+        viewModelScope.launch {
+            repository.deleteGame(gameId)
+        }
 }
