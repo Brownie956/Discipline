@@ -14,6 +14,16 @@ class GameRepository(
             .map { entities -> entities.map(GameEntity::toGame) }
     }
 
+    fun observeCompletedGames(): Flow<List<Game>> {
+        return gameDao.observeCompletedGames()
+            .map { entities -> entities.map(GameEntity::toGame) }
+    }
+
+    fun observeAbandonedGames(): Flow<List<Game>> {
+        return gameDao.observeAbandonedGames()
+            .map { entities -> entities.map(GameEntity::toGame) }
+    }
+
     fun observeGame(gameId: Long): Flow<Game?> {
         return gameDao.observeGame(gameId)
             .map { entity -> entity?.toGame() }

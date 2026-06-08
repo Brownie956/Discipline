@@ -45,10 +45,14 @@ class MainActivity : ComponentActivity() {
                             factory = HomeViewModelFactory(repository)
                         )
 
-                        val games by viewModel.gameSummaries.collectAsStateWithLifecycle()
+                        val activeGames by viewModel.activeGameSummaries.collectAsStateWithLifecycle()
+                        val completedGames by viewModel.completedGameSummaries.collectAsStateWithLifecycle()
+                        val abandonedGames by viewModel.abandonedGameSummaries.collectAsStateWithLifecycle()
 
                         HomeScreen(
-                            games = games,
+                            activeGames = activeGames,
+                            completedGames = completedGames,
+                            abandonedGames = abandonedGames,
                             onGameClick = { gameId ->
                                 navController.navigate(Screen.Game.createRoute(gameId))
                             },

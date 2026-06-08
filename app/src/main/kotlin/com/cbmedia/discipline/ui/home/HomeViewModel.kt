@@ -15,8 +15,26 @@ class HomeViewModel(
     private val repository: GameRepository
 ) : ViewModel() {
 
-    val gameSummaries: StateFlow<List<GameSummary>> =
+    val activeGameSummaries: StateFlow<List<GameSummary>> =
         repository.observeActiveGames()
+            .map { games -> games.map(Game::toSummary) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+
+    val completedGameSummaries: StateFlow<List<GameSummary>> =
+        repository.observeCompletedGames()
+            .map { games -> games.map(Game::toSummary) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+
+    val abandonedGameSummaries: StateFlow<List<GameSummary>> =
+        repository.observeAbandonedGames()
             .map { games -> games.map(Game::toSummary) }
             .stateIn(
                 scope = viewModelScope,

@@ -25,7 +25,9 @@ import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
-    games: List<GameSummary>,
+    activeGames: List<GameSummary>,
+    completedGames: List<GameSummary>,
+    abandonedGames: List<GameSummary>,
     onGameClick: (Long) -> Unit,
     onCreateNewGameClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -43,9 +45,8 @@ fun HomeScreen(
             }
         }
     ) { paddingValues ->
-
         LazyColumn(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
@@ -53,18 +54,64 @@ fun HomeScreen(
         ) {
             item {
                 Text(
-                    text = "Your Games",
+                    text = "Active Games",
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
 
-            if (games.isEmpty()) {
+            if (activeGames.isEmpty()) {
                 item {
                     EmptyGamesSummaryCard()
                 }
             } else {
                 items(
-                    items = games,
+                    items = activeGames,
+                    key = { it.id }
+                ) { game ->
+                    GameSummaryCard(
+                        game = game,
+                        onClick = { onGameClick(game.id) }
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    text = "Completed Games",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+
+            if (activeGames.isEmpty()) {
+                item {
+                    EmptyGamesSummaryCard()
+                }
+            } else {
+                items(
+                    items = completedGames,
+                    key = { it.id }
+                ) { game ->
+                    GameSummaryCard(
+                        game = game,
+                        onClick = { onGameClick(game.id) }
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    text = "Abandoned Games",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+
+            if (activeGames.isEmpty()) {
+                item {
+                    EmptyGamesSummaryCard()
+                }
+            } else {
+                items(
+                    items = abandonedGames,
                     key = { it.id }
                 ) { game ->
                     GameSummaryCard(
@@ -74,6 +121,7 @@ fun HomeScreen(
                 }
             }
         }
+
     }
 }
 
@@ -82,7 +130,7 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     MaterialTheme {
         HomeScreen(
-            games = listOf(
+            activeGames = listOf(
                 GameSummary(
                     id = 1,
                     name = "Main Game",
@@ -101,6 +149,28 @@ private fun HomeScreenPreview() {
                     lastDrawnCard = CardType.FREEZE,
                     freezeEndsOn = LocalDate.now().plusDays(3)
                 )
+            ),
+            completedGames = listOf(
+                GameSummary(
+                    id = 3,
+                    name = "Completed Game",
+                    remainingDays = 0,
+                    deckCount = 38,
+                    discardCount = 6,
+                    lastDrawnCard = CardType.DOUBLE,
+                    freezeEndsOn = null
+                ),
+            ),
+            abandonedGames = listOf(
+                GameSummary(
+                    id = 4,
+                    name = "Abandoned Game",
+                    remainingDays = 0,
+                    deckCount = 38,
+                    discardCount = 6,
+                    lastDrawnCard = CardType.DOUBLE,
+                    freezeEndsOn = null
+                ),
             ),
             onGameClick = {},
             onCreateNewGameClick = {}
