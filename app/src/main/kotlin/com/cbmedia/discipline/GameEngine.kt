@@ -1,10 +1,10 @@
 package com.cbmedia.discipline
 
+import com.cbmedia.discipline.model.CardRules
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.DrawResult
 import com.cbmedia.discipline.model.GameState
 import java.time.LocalDate
-import kotlin.random.Random
 
 object GameEngine {
 
@@ -49,7 +49,7 @@ object GameEngine {
             CardType.GREEN -> DrawResult(
                 drawnCard = drawnCard,
                 newState = state.copy(
-                    remainingDays = state.remainingDays - 1,
+                    remainingDays = state.remainingDays - CardRules.GREEN_DAY_SUBTRACT,
                     deck = remainingDeck,
                     discardPile = state.discardPile + drawnCard,
                     lastDrawnCard = drawnCard,
@@ -60,7 +60,7 @@ object GameEngine {
             CardType.RED -> DrawResult(
                 drawnCard = drawnCard,
                 newState = state.copy(
-                    remainingDays = state.remainingDays + 3,
+                    remainingDays = state.remainingDays + CardRules.RED_DAYS_ADDED,
                     deck = remainingDeck,
                     discardPile = state.discardPile + drawnCard,
                     lastDrawnCard = drawnCard,
@@ -71,7 +71,7 @@ object GameEngine {
             CardType.STICKY -> DrawResult(
                 drawnCard = drawnCard,
                 newState = state.copy(
-                    remainingDays = state.remainingDays + 3,
+                    remainingDays = state.remainingDays + CardRules.RED_DAYS_ADDED,
                     deck = (remainingDeck + drawnCard).shuffled(),
                     lastDrawnCard = drawnCard,
                     lastDrawDate = today
@@ -81,7 +81,7 @@ object GameEngine {
             CardType.YELLOW -> DrawResult(
                 drawnCard = drawnCard,
                 newState = state.copy(
-                    deck = (remainingDeck + List(3) { CardType.RED }).shuffled(),
+                    deck = (remainingDeck + List(CardRules.YELLOW_REDS_ADDED) { CardType.RED }).shuffled(),
                     discardPile = state.discardPile + drawnCard,
                     lastDrawnCard = drawnCard,
                     lastDrawDate = today
@@ -118,7 +118,7 @@ object GameEngine {
             }
 
             CardType.FREEZE -> {
-                val freezeDays = Random.nextInt(from = 2, until = 8)
+                val freezeDays = CardRules.randomFreezeDays()
 
                 DrawResult(
                     drawnCard = drawnCard,
@@ -134,7 +134,7 @@ object GameEngine {
             }
 
             CardType.ARCTIC -> {
-                val freezeDays = Random.nextInt(from = 2, until = 8)
+                val freezeDays = CardRules.randomFreezeDays()
 
                 DrawResult(
                     drawnCard = drawnCard,

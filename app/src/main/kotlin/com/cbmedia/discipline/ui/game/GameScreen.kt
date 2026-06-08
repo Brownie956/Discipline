@@ -29,6 +29,7 @@ import com.cbmedia.discipline.IceBlue
 import com.cbmedia.discipline.IceText
 import com.cbmedia.discipline.inverted
 import com.cbmedia.discipline.model.CardType
+import com.cbmedia.discipline.model.describeLastDraw
 import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
 import com.cbmedia.discipline.model.GameStatus
@@ -131,7 +132,7 @@ fun GameScreen(
                 GameInfoCard(
                     title = "Last Card Drawn",
                     card = state.lastDrawnCard?.displayName ?: "No card drawn yet",
-                    cardDescription = state.lastDrawnCard?.description,
+                    cardDescription = state.lastDrawnCard?.describeLastDraw(state),
                     discardRuleDescription = state.lastDrawnCard?.discardedRule?.description,
                     containerColor = state.lastDrawnCard?.primaryColor,
                     contentColor = state.lastDrawnCard?.secondaryColor
@@ -228,7 +229,7 @@ private fun GameScreenFrozenPreview() {
                 CardType.ARCTIC,
             ),
             lastDrawnCard = CardType.FREEZE,
-            lastDrawDate = LocalDate.now().minusDays(1),
+            lastDrawDate = LocalDate.now(),
             freezeEndsOn = LocalDate.now().plusDays(3)
         ),
         createdDate = LocalDate.now()
