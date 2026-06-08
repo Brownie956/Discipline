@@ -1,9 +1,9 @@
 package com.cbmedia.discipline.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -13,10 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.IceBlueDark
 import com.cbmedia.discipline.IceText
+import com.cbmedia.discipline.model.DiscardRule
 
 @Composable
 fun GameInfoCard(
@@ -24,6 +26,7 @@ fun GameInfoCard(
     card: String,
     modifier: Modifier = Modifier,
     cardDescription: String? = null,
+    discardRuleDescription: String? = null,
     containerColor: Color? = null,
     contentColor: Color? = null
 ) {
@@ -36,14 +39,25 @@ fun GameInfoCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelLarge
-            )
+            Row {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.weight(1f)
+                )
 
-            Spacer(Modifier.height(8.dp))
+                discardRuleDescription?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.labelSmall,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
 
             Text(
                 text = card,
@@ -51,7 +65,6 @@ fun GameInfoCard(
             )
 
             cardDescription?.let {
-                Spacer(Modifier.height(8.dp))
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodySmall
@@ -63,12 +76,27 @@ fun GameInfoCard(
 
 @Preview(showBackground = true)
 @Composable
-private fun GameInfoCardPreview() {
+private fun GameInfoCardDiscardedPreview() {
     MaterialTheme {
         GameInfoCard(
             title = "Last Card Drawn",
             card = "Double",
             cardDescription = "Number of RED and YELLOW cards in the deck doubled",
+            discardRuleDescription = DiscardRule.DISCARDED.description,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GameInfoCardShuffledPreview() {
+    MaterialTheme {
+        GameInfoCard(
+            title = "Last Card Drawn",
+            card = "Double",
+            cardDescription = "Number of RED and YELLOW cards in the deck doubled",
+            discardRuleDescription = DiscardRule.RESHUFFLED.description,
             modifier = Modifier.padding(16.dp)
         )
     }

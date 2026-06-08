@@ -132,6 +132,7 @@ fun GameScreen(
                     title = "Last Card Drawn",
                     card = state.lastDrawnCard?.displayName ?: "No card drawn yet",
                     cardDescription = state.lastDrawnCard?.description,
+                    discardRuleDescription = state.lastDrawnCard?.discardedRule?.description,
                     containerColor = state.lastDrawnCard?.primaryColor,
                     contentColor = state.lastDrawnCard?.secondaryColor
                 )

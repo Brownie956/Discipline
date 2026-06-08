@@ -7,6 +7,7 @@ enum class CardType(
     val description: String,
     val primaryColor: Color,
     val secondaryColor: Color,
+    val discardedRule: DiscardRule = DiscardRule.DISCARDED,
 ) {
     GREEN(
         displayName = "Green",
@@ -23,6 +24,7 @@ enum class CardType(
     STICKY(
         displayName = "Sticky",
         description = "3 days added to days remaining",
+        discardedRule = DiscardRule.RESHUFFLED,
         primaryColor = Color(0xFF460505),
         secondaryColor = Color(0xFFFFFFFF)
     ),
@@ -53,7 +55,13 @@ enum class CardType(
     ARCTIC(
         displayName = "Arctic",
         description = "Countdown and deck frozen",
+        discardedRule = DiscardRule.RESHUFFLED,
         primaryColor = Color(0xFF6C91C0),
         secondaryColor = Color(0xFF00344D)
     )
+}
+
+enum class DiscardRule(val description: String) {
+    DISCARDED("Card added to discard pile"),
+    RESHUFFLED("Card shuffled back into the deck")
 }
