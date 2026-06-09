@@ -3,7 +3,6 @@ package com.cbmedia.discipline.ui.game
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.IceBlue
 import com.cbmedia.discipline.IceText
-import com.cbmedia.discipline.inverted
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.describeLastDraw
 import com.cbmedia.discipline.model.Game
@@ -136,12 +134,17 @@ fun GameScreen(
             }
 
             item {
-                Row {
-                    Text(
-                        text = "Discard Pile - ${state.discardPile.size}",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                Text(
+                    text = "Cards remaining in deck - ${state.deck.size}",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            item {
+                Text(
+                    text = "Discard Pile - ${state.discardPile.size}",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
             if (state.discardPile.isEmpty()) {
