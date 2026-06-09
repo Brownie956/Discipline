@@ -1,6 +1,9 @@
 package com.cbmedia.discipline.model
 
 import androidx.compose.ui.graphics.Color
+import com.cbmedia.discipline.IceBlue
+import com.cbmedia.discipline.IceBlueDark
+import com.cbmedia.discipline.IceText
 
 enum class CardType(
     val displayName: String,
@@ -21,12 +24,12 @@ enum class CardType(
     STICKY(
         displayName = "Sticky",
         discardedRule = DiscardRule.RESHUFFLED,
-        primaryColor = Color(0xFF460505),
+        primaryColor = Color(0xFF690C0C),
         secondaryColor = Color(0xFFFFFFFF)
     ),
     YELLOW(
         displayName = "Yellow",
-        primaryColor = Color(0xFFCCCC00),
+        primaryColor = Color(0xFFEAEA00),
         secondaryColor = Color(0xFF000000)
     ),
     RESET(
@@ -36,19 +39,19 @@ enum class CardType(
     ),
     DOUBLE(
         displayName = "Double",
-        primaryColor = Color(0xFF480048),
+        primaryColor = Color(0xFF670067),
         secondaryColor = Color(0xFFFFFFFF)
     ),
     FREEZE(
         displayName = "Freeze",
-        primaryColor = Color(0xFF396185),
-        secondaryColor = Color(0xFF00344D)
+        primaryColor = IceBlue,
+        secondaryColor = IceText
     ),
     ARCTIC(
         displayName = "Arctic",
         discardedRule = DiscardRule.RESHUFFLED,
-        primaryColor = Color(0xFF6C91C0),
-        secondaryColor = Color(0xFF00344D)
+        primaryColor = IceBlueDark,
+        secondaryColor = IceText
     )
 }
 
