@@ -9,5 +9,6 @@ data class GameSummary(
     val deckCount: Int,
     val discardCount: Int,
     val lastDrawnCard: CardType?,
-    val freezeEndsOn: LocalDate?
+    val freezeEndsOn: LocalDate?,
+    val totalDays: Int
 )

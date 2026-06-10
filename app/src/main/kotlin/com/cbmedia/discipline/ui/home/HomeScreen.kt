@@ -177,7 +177,8 @@ private fun HomeScreenPreview() {
                     deckCount = 38,
                     discardCount = 6,
                     lastDrawnCard = CardType.DOUBLE,
-                    freezeEndsOn = null
+                    freezeEndsOn = null,
+                    totalDays = 5
                 ),
                 GameSummary(
                     id = 2,
@@ -186,7 +187,8 @@ private fun HomeScreenPreview() {
                     deckCount = 52,
                     discardCount = 9,
                     lastDrawnCard = CardType.FREEZE,
-                    freezeEndsOn = LocalDate.now().plusDays(3)
+                    freezeEndsOn = LocalDate.now().plusDays(3),
+                    totalDays = 117
                 )
             ),
             completedGames = listOf(
@@ -197,7 +199,8 @@ private fun HomeScreenPreview() {
                     deckCount = 38,
                     discardCount = 6,
                     lastDrawnCard = CardType.DOUBLE,
-                    freezeEndsOn = null
+                    freezeEndsOn = null,
+                    totalDays = 15
                 ),
             ),
             abandonedGames = listOf(
@@ -208,7 +211,8 @@ private fun HomeScreenPreview() {
                     deckCount = 38,
                     discardCount = 6,
                     lastDrawnCard = CardType.DOUBLE,
-                    freezeEndsOn = null
+                    freezeEndsOn = null,
+                    totalDays = 155
                 ),
             ),
             onGameClick = {},

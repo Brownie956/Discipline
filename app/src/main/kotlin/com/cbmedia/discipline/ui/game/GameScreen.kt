@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.IceBlue
 import com.cbmedia.discipline.IceText
+import com.cbmedia.discipline.daysActive
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.describeLastDraw
 import com.cbmedia.discipline.model.Game
@@ -147,6 +148,13 @@ fun GameScreen(
                 )
             }
 
+            item {
+                Text(
+                    text = "Total days - ${game.daysActive()}",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
             if (state.discardPile.isEmpty()) {
                 item {
                     Text(
@@ -191,7 +199,7 @@ private fun GameScreenPreview() {
             lastDrawDate = LocalDate.now().minusDays(1),
             freezeEndsOn = null
         ),
-        createdDate = LocalDate.now()
+        createdDate = LocalDate.now().minusDays(3)
     )
 
     MaterialTheme {
@@ -231,7 +239,7 @@ private fun GameScreenFrozenPreview() {
             lastDrawDate = LocalDate.now(),
             freezeEndsOn = LocalDate.now().plusDays(3)
         ),
-        createdDate = LocalDate.now()
+        createdDate = LocalDate.now().minusDays(13)
     )
 
     MaterialTheme {
@@ -271,7 +279,7 @@ private fun GameScreenCompletedPreview() {
             lastDrawDate = LocalDate.now().minusDays(1),
             freezeEndsOn = null
         ),
-        createdDate = LocalDate.now(),
+        createdDate = LocalDate.now().minusDays(112),
         status = GameStatus.COMPLETED
     )
 

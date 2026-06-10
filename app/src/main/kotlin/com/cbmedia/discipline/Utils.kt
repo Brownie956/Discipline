@@ -5,6 +5,7 @@ import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameSummary
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 val IceBlue = Color(0xFFB3E5FC)
 val IceBlueDark = Color(0xFF4FC3F7)
@@ -20,14 +21,12 @@ fun Game.toSummary(): GameSummary =
         deckCount = state.deck.size,
         discardCount = state.discardPile.size,
         lastDrawnCard = state.lastDrawnCard,
-        freezeEndsOn = state.freezeEndsOn
+        freezeEndsOn = state.freezeEndsOn,
+        totalDays = daysActive()
     )
 
-fun Color.inverted(): Color {
-    return Color(
-        red = 1f - red,
-        green = 1f - green,
-        blue = 1f - blue,
-        alpha = alpha
-    )
-}
+fun Game.daysActive(): Int =
+    ChronoUnit.DAYS.between(
+        createdDate,
+        endedDate ?: LocalDate.now()
+    ).toInt()

@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.IceBlue
 import com.cbmedia.discipline.IceText
+import com.cbmedia.discipline.daysActive
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.GameSummary
 import com.cbmedia.discipline.toUKFormat
@@ -105,6 +106,11 @@ fun GameSummaryCard(
                 style = MaterialTheme.typography.bodyMedium
             )
 
+            Text(
+                text = "Total days: ${game.totalDays}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
             val lastCardText = game.lastDrawnCard?.displayName ?: "None yet"
 
             Text(
@@ -162,7 +168,8 @@ fun GamesSummaryCardPreview() {
             deckCount = 30,
             discardCount = 4,
             lastDrawnCard = CardType.ARCTIC,
-            freezeEndsOn = null
+            freezeEndsOn = null,
+            totalDays = 4
         ),
         onClick = {},
         onDeleteClick = {}
@@ -180,7 +187,8 @@ fun GamesSummaryCardFrozenPreview() {
             deckCount = 30,
             discardCount = 4,
             lastDrawnCard = CardType.ARCTIC,
-            freezeEndsOn = LocalDate.now().plusDays(3)
+            freezeEndsOn = LocalDate.now().plusDays(3),
+            totalDays = 10
         ),
         onClick = {},
         onDeleteClick = {}
