@@ -163,8 +163,18 @@ fun GameScreen(
                     )
                 }
             } else {
-                items(state.discardPile) { card ->
-                    DiscardPileRow(card)
+                val cardCounts = state.discardPile
+                    .groupingBy { it }
+                    .eachCount()
+
+                items(
+                    items = CardType.entries.filter { cardCounts.containsKey(it) },
+                    key = { it }
+                ) { cardType ->
+                    DiscardPileRow(
+                        card = cardType,
+                        count = cardCounts.getValue(cardType)
+                    )
                 }
             }
         }
@@ -187,6 +197,9 @@ private fun GameScreenPreview() {
             ),
             discardPile = listOf(
                 CardType.GREEN,
+                CardType.RED,
+                CardType.RED,
+                CardType.RED,
                 CardType.RED,
                 CardType.STICKY,
                 CardType.YELLOW,

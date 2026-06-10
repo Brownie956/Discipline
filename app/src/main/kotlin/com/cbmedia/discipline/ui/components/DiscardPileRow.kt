@@ -1,13 +1,12 @@
 package com.cbmedia.discipline.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -23,29 +22,39 @@ import com.cbmedia.discipline.model.CardType
 @Composable
 fun DiscardPileRow(
     card: CardType,
+    count: Int,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 16.dp, vertical = 4.dp)
+                .fillMaxWidth(),
         ) {
-            Box(
-                modifier = Modifier
-                    .size(18.dp)
-                    .background(card.primaryColor, CircleShape)
-            )
+            Row(
+                Modifier.align(Alignment.CenterStart),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .background(card.primaryColor, CircleShape)
+                )
 
-            Spacer(Modifier.width(12.dp))
+                Text(
+                    text = card.displayName,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
 
             Text(
-                text = card.displayName,
-                style = MaterialTheme.typography.bodyLarge
+                text = "x$count",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.align(Alignment.CenterEnd)
             )
         }
     }
@@ -57,6 +66,7 @@ private fun DiscardPileRowPreview() {
     MaterialTheme {
         DiscardPileRow(
             card = CardType.YELLOW,
+            count = 5,
             modifier = Modifier.padding(16.dp)
         )
     }
