@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -65,16 +65,19 @@ fun GameSummaryCard(
                 if (isFrozen) {
                     AssistChip(
                         onClick = {},
-                        label = {
+                        leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.AcUnit,
                                 contentDescription = null
                             )
-
-                            Spacer(modifier = Modifier.width(4.dp))
-
+                        },
+                        label = {
                             Text("Frozen")
                         },
+                        colors = AssistChipDefaults.assistChipColors(
+                            labelColor = IceText,
+                            leadingIconContentColor = IceText
+                        )
                     )
                 }
 
