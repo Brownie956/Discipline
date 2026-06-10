@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.model.CardType
 
 @Composable
-fun DiscardPileRow(
+fun CardFrequencyRow(
     card: CardType,
     count: Int,
     modifier: Modifier = Modifier
@@ -62,9 +62,9 @@ fun DiscardPileRow(
 
 @Preview(showBackground = true)
 @Composable
-private fun DiscardPileRowPreview() {
+private fun CardFrequencyRowPreview() {
     MaterialTheme {
-        DiscardPileRow(
+        CardFrequencyRow(
             card = CardType.YELLOW,
             count = 5,
             modifier = Modifier.padding(16.dp)

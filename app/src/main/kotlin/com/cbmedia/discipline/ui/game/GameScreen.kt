@@ -33,7 +33,7 @@ import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
 import com.cbmedia.discipline.model.GameStatus
 import com.cbmedia.discipline.toUKFormat
-import com.cbmedia.discipline.ui.components.DiscardPileRow
+import com.cbmedia.discipline.ui.components.CardFrequencyRow
 import com.cbmedia.discipline.ui.components.GameInfoCard
 import java.time.LocalDate
 import java.util.Locale.getDefault
@@ -105,7 +105,7 @@ fun GameScreen(
                 .fillMaxSize()
                 .padding(padding),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             item {
@@ -128,6 +128,14 @@ fun GameScreen(
             }
 
             item {
+                Text(
+                    text = "Total days - ${game.daysActive()}",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
+            item {
                 GameInfoCard(
                     card = state.lastDrawnCard,
                     cardDescription = state.lastDrawnCard?.describeLastDraw(state),
@@ -137,21 +145,30 @@ fun GameScreen(
             item {
                 Text(
                     text = "Cards remaining in deck - ${state.deck.size}",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            val remainingDeckCounts = state.deck
+                .groupingBy { it }
+                .eachCount()
+
+            items(
+                items = CardType.entries.filter { remainingDeckCounts.containsKey(it) },
+                key = { "deck_$it" }
+            ) { cardType ->
+                CardFrequencyRow(
+                    card = cardType,
+                    count = remainingDeckCounts.getValue(cardType)
                 )
             }
 
             item {
                 Text(
                     text = "Discard Pile - ${state.discardPile.size}",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            item {
-                Text(
-                    text = "Total days - ${game.daysActive()}",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
 
@@ -169,9 +186,9 @@ fun GameScreen(
 
                 items(
                     items = CardType.entries.filter { cardCounts.containsKey(it) },
-                    key = { it }
+                    key = { "discard_$it" }
                 ) { cardType ->
-                    DiscardPileRow(
+                    CardFrequencyRow(
                         card = cardType,
                         count = cardCounts.getValue(cardType)
                     )
@@ -191,6 +208,8 @@ private fun GameScreenPreview() {
             remainingDays = 24,
             deck = listOf(
                 CardType.GREEN,
+                CardType.RED,
+                CardType.RED,
                 CardType.RED,
                 CardType.STICKY,
                 CardType.ARCTIC
