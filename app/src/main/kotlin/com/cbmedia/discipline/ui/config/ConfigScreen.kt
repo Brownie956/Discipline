@@ -197,6 +197,7 @@ fun ConfigScreen(
                         onClick = { onSetDefaultCardCounts(GameMode.EASY) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF4CAF50),
+                            contentColor = Color(0xFFFFFFFF)
                         ),
                         contentPadding = ButtonDefaults.TextButtonContentPadding
                     ) {
@@ -206,8 +207,8 @@ fun ConfigScreen(
                     Button(
                         onClick = { onSetDefaultCardCounts(GameMode.MEDIUM) },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFFFBE3B),
-                            contentColor = Color(0xFF000000)
+                            containerColor = Color(0xFFE5A01C),
+                            contentColor = Color(0xFFFFFFFF)
                         ),
                         contentPadding = ButtonDefaults.TextButtonContentPadding
                     ) {
@@ -217,7 +218,8 @@ fun ConfigScreen(
                     Button(
                         onClick = { onSetDefaultCardCounts(GameMode.HARD) },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF8D0000)
+                            containerColor = Color(0xFF8D0000),
+                            contentColor = Color(0xFFFFFFFF)
                         ),
                         contentPadding = ButtonDefaults.TextButtonContentPadding
                     ) {
@@ -227,7 +229,8 @@ fun ConfigScreen(
                     Button(
                         onClick = { onSetDefaultCardCounts(GameMode.IMPOSSIBLE) },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF7129FF)
+                            containerColor = Color(0xFF7129FF),
+                            contentColor = Color(0xFFFFFFFF)
                         ),
                         contentPadding = ButtonDefaults.TextButtonContentPadding
                     ) {
