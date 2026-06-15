@@ -9,6 +9,7 @@ import com.cbmedia.discipline.GameEngine
 import com.cbmedia.discipline.data.GameRepository
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.Game
+import com.cbmedia.discipline.model.GameMode
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -62,6 +63,10 @@ class ConfigViewModel(
         cardCounts = cardCounts.toMutableMap().also {
             it[cardType] = maxOf(0, (it[cardType] ?: 0) - 1)
         }
+    }
+
+    fun setPresetCardCount(mode: GameMode) {
+        cardCounts = mode.cardCounts
     }
 
     fun createGame(

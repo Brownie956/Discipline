@@ -77,6 +77,7 @@ class MainActivity : ComponentActivity() {
                             onUseCardCountAsBaseDaysChanged = viewModel::updateUseCardCountAsBaseDays,
                             totalSelectedCards = viewModel.totalSelectedCards,
                             cardCounts = viewModel.cardCounts,
+                            onSetDefaultCardCounts = viewModel::setPresetCardCount,
                             onIncrement = viewModel::increment,
                             onDecrement = viewModel::decrement,
                             onStartGame = {

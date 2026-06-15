@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -22,10 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.model.CardType
+import com.cbmedia.discipline.model.GameMode
 import com.cbmedia.discipline.ui.components.CardCountSelector
 
 @Composable
@@ -38,6 +42,7 @@ fun ConfigScreen(
     onUseCardCountAsBaseDaysChanged: (Boolean) -> Unit,
     totalSelectedCards: Int,
     cardCounts: Map<CardType, Int>,
+    onSetDefaultCardCounts: (GameMode) -> Unit,
     onIncrement: (CardType) -> Unit,
     onDecrement: (CardType) -> Unit,
     onStartGame: () -> Unit,
@@ -169,6 +174,68 @@ fun ConfigScreen(
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
+
+            item {
+
+                Text(
+                    text = "Preset game modes",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onUseCardCountAsBaseDaysChanged(!useCardCountAsBaseDays)
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(
+                        onClick = { onSetDefaultCardCounts(GameMode.EASY) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4CAF50),
+                        ),
+                        contentPadding = ButtonDefaults.TextButtonContentPadding
+                    ) {
+                        Text("Easy")
+                    }
+
+                    Button(
+                        onClick = { onSetDefaultCardCounts(GameMode.MEDIUM) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFFBE3B),
+                            contentColor = Color(0xFF000000)
+                        ),
+                        contentPadding = ButtonDefaults.TextButtonContentPadding
+                    ) {
+                        Text("Medium")
+                    }
+
+                    Button(
+                        onClick = { onSetDefaultCardCounts(GameMode.HARD) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF8D0000)
+                        ),
+                        contentPadding = ButtonDefaults.TextButtonContentPadding
+                    ) {
+                        Text("Hard")
+                    }
+
+                    Button(
+                        onClick = { onSetDefaultCardCounts(GameMode.IMPOSSIBLE) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF7129FF)
+                        ),
+                        contentPadding = ButtonDefaults.TextButtonContentPadding
+                    ) {
+                        Text("Impossible 😈")
+                    }
+                }
+            }
+
             items(
                 items = cardCounts.entries.toList(),
                 key = { it.key }
@@ -209,6 +276,7 @@ private fun ConfigScreenPreview() {
             onUseCardCountAsBaseDaysChanged = {},
             totalSelectedCards = sampleCounts.values.sum(),
             cardCounts = sampleCounts,
+            onSetDefaultCardCounts = {},
             onIncrement = {},
             onDecrement = {},
             onStartGame = {}
