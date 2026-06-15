@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.IceBlue
 import com.cbmedia.discipline.IceText
-import com.cbmedia.discipline.daysActive
+import com.cbmedia.discipline.isGameFrozen
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.GameSummary
 import com.cbmedia.discipline.toUKFormat
@@ -40,7 +40,7 @@ fun GameSummaryCard(
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isFrozen = game.freezeEndsOn?.let { LocalDate.now() <= it } == true
+    val isFrozen = isGameFrozen(game.freezeEndsOn)
 
     Card(
         onClick = onClick,
@@ -118,7 +118,7 @@ fun GameSummaryCard(
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            if (isFrozen) {
+            if (isFrozen && game.freezeEndsOn != null) {
                 Spacer(Modifier.height(8.dp))
 
                 Text(

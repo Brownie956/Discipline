@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.IceBlue
 import com.cbmedia.discipline.IceText
 import com.cbmedia.discipline.daysActive
+import com.cbmedia.discipline.isGameFrozen
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.describeLastDraw
 import com.cbmedia.discipline.model.Game
@@ -48,7 +49,7 @@ fun GameScreen(
     val state = game.state
     val isGameActive = game.status == GameStatus.ACTIVE
 
-    val isFrozen = state.freezeEndsOn?.let { LocalDate.now() <= it } == true
+    val isFrozen = isGameFrozen(state.freezeEndsOn)
 
     val canDraw = isGameActive &&
             state.deck.isNotEmpty() &&
@@ -86,7 +87,7 @@ fun GameScreen(
 
                     Spacer(modifier = Modifier.width(4.dp))
 
-                    Text(if (isFrozen) "Frozen Until ${state.freezeEndsOn.toUKFormat()}" else "Draw Card")
+                    Text(if (isFrozen && state.freezeEndsOn != null) "Frozen Until ${state.freezeEndsOn.toUKFormat()}" else "Draw Card")
                 }
 
                 OutlinedButton(

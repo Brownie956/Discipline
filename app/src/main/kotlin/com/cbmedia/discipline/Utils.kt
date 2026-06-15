@@ -13,6 +13,8 @@ val IceText = Color(0xFF00344D)
 
 fun LocalDate.toUKFormat(): String = this.format(DateTimeFormatter.ofPattern("d MMM yyyy"))
 
+fun isGameFrozen(freezeEndsOn: LocalDate?) = freezeEndsOn?.let { LocalDate.now().isBefore(it) } == true
+
 fun Game.toSummary(): GameSummary =
     GameSummary(
         id = id,

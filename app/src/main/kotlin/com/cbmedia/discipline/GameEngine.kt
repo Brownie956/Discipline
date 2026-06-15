@@ -27,7 +27,7 @@ object GameEngine {
         state: GameState,
         today: LocalDate = LocalDate.now()
     ): Boolean {
-        val isFrozen = state.freezeEndsOn?.let { today <= it } ?: false
+        val isFrozen = isGameFrozen(state.freezeEndsOn)
 
         return state.deck.isNotEmpty() &&
                 state.lastDrawDate != today &&
