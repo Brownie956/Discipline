@@ -3,13 +3,19 @@ package com.cbmedia.discipline
 import com.cbmedia.discipline.model.CardRules
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.DrawResult
+import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
-import java.time.LocalDate
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 object GameEngine {
 
+    @OptIn(ExperimentalTime::class)
     fun startGame(
-        baseDays: Int,
+        baseTimerMinutes: Long,
         cardCounts: Map<CardType, Int>
     ): GameState {
         val deck = cardCounts.flatMap { (type, count) ->
@@ -17,31 +23,39 @@ object GameEngine {
         }.shuffled()
 
         return GameState(
-            remainingDays = baseDays,
+            remainingMinutes = baseTimerMinutes,
             deck = deck,
             discardPile = emptyList()
         )
     }
 
-    fun canDrawToday(
-        state: GameState,
-        today: LocalDate = LocalDate.now()
+    @OptIn(ExperimentalTime::class)
+    fun canDraw(
+        game: Game,
+        now: Instant = Clock.System.now()
     ): Boolean {
-        val isFrozen = isGameFrozen(state.freezeEndsOn)
+        val state = game.state
+        val isFrozen = isGameFrozen(state.freezeEndsAt)
+        val intervalHasPassed = state.lastDrawTime?.let { lastDraw ->
+            now >= lastDraw + game.drawInterval
+        } ?: true
 
         return state.deck.isNotEmpty() &&
-                state.lastDrawDate != today &&
-                !isFrozen
+                state.lastDrawTime != now &&
+                !isFrozen &&
+                intervalHasPassed
     }
 
+    @OptIn(ExperimentalTime::class)
     fun drawCard(
-        state: GameState,
-        today: LocalDate = LocalDate.now()
+        game: Game,
+        now: Instant = Clock.System.now()
     ): DrawResult {
-        require(canDrawToday(state, today)) {
+        require(canDraw(game, now)) {
             "Cannot draw a card today."
         }
 
+        val state = game.state
         val drawnCard = state.deck.first()
         val remainingDeck = state.deck.drop(1)
 
@@ -49,32 +63,32 @@ object GameEngine {
             CardType.GREEN -> DrawResult(
                 drawnCard = drawnCard,
                 newState = state.copy(
-                    remainingDays = state.remainingDays - CardRules.GREEN_DAY_SUBTRACT,
+                    remainingMinutes = state.remainingMinutes - CardRules.GREEN_DAY_SUBTRACT,
                     deck = remainingDeck,
                     discardPile = state.discardPile + drawnCard,
                     lastDrawnCard = drawnCard,
-                    lastDrawDate = today
+                    lastDrawTime = now
                 )
             )
 
             CardType.RED -> DrawResult(
                 drawnCard = drawnCard,
                 newState = state.copy(
-                    remainingDays = state.remainingDays + CardRules.RED_DAYS_ADDED,
+                    remainingMinutes = state.remainingMinutes + CardRules.RED_DAYS_ADDED,
                     deck = remainingDeck,
                     discardPile = state.discardPile + drawnCard,
                     lastDrawnCard = drawnCard,
-                    lastDrawDate = today
+                    lastDrawTime = now
                 )
             )
 
             CardType.STICKY -> DrawResult(
                 drawnCard = drawnCard,
                 newState = state.copy(
-                    remainingDays = state.remainingDays + CardRules.RED_DAYS_ADDED,
+                    remainingMinutes = state.remainingMinutes + CardRules.RED_DAYS_ADDED,
                     deck = (remainingDeck + drawnCard).shuffled(),
                     lastDrawnCard = drawnCard,
-                    lastDrawDate = today
+                    lastDrawTime = now
                 )
             )
 
@@ -84,7 +98,7 @@ object GameEngine {
                     deck = (remainingDeck + List(CardRules.YELLOW_REDS_ADDED) { CardType.RED }).shuffled(),
                     discardPile = state.discardPile + drawnCard,
                     lastDrawnCard = drawnCard,
-                    lastDrawDate = today
+                    lastDrawTime = now
                 )
             )
 
@@ -94,7 +108,7 @@ object GameEngine {
                     deck = (remainingDeck + state.discardPile).shuffled(),
                     discardPile = emptyList(),
                     lastDrawnCard = drawnCard,
-                    lastDrawDate = today
+                    lastDrawTime = now
                 )
             )
 
@@ -112,7 +126,7 @@ object GameEngine {
                                 ).shuffled(),
                         discardPile = state.discardPile + drawnCard,
                         lastDrawnCard = drawnCard,
-                        lastDrawDate = today
+                        lastDrawTime = now
                     )
                 )
             }
@@ -126,9 +140,9 @@ object GameEngine {
                     newState = state.copy(
                         deck = remainingDeck,
                         discardPile = state.discardPile + drawnCard,
-                        freezeEndsOn = today.plusDays(freezeDays.toLong()),
+                        freezeEndsAt = now + freezeDays.days,
                         lastDrawnCard = drawnCard,
-                        lastDrawDate = today
+                        lastDrawTime = now
                     )
                 )
             }
@@ -141,9 +155,9 @@ object GameEngine {
                     freezeDays = freezeDays,
                     newState = state.copy(
                         deck = (remainingDeck + drawnCard).shuffled(),
-                        freezeEndsOn = today.plusDays(freezeDays.toLong()),
+                        freezeEndsAt = now + freezeDays.days,
                         lastDrawnCard = drawnCard,
-                        lastDrawDate = today
+                        lastDrawTime = now
                     )
                 )
             }

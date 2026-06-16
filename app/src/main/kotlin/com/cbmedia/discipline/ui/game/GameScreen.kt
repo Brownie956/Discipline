@@ -33,12 +33,20 @@ import com.cbmedia.discipline.model.describeLastDraw
 import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
 import com.cbmedia.discipline.model.GameStatus
+import com.cbmedia.discipline.toDisplayText
 import com.cbmedia.discipline.toUKFormat
 import com.cbmedia.discipline.ui.components.CardFrequencyRow
 import com.cbmedia.discipline.ui.components.GameInfoCard
 import java.time.LocalDate
 import java.util.Locale.getDefault
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun GameScreen(
     game: Game,
@@ -49,12 +57,16 @@ fun GameScreen(
     val state = game.state
     val isGameActive = game.status == GameStatus.ACTIVE
 
-    val isFrozen = isGameFrozen(state.freezeEndsOn)
+    val isFrozen = isGameFrozen(state.freezeEndsAt)
+    val intervalHasPassed = state.lastDrawTime?.let { lastDraw ->
+        Clock.System.now() >= lastDraw + game.drawInterval
+    } ?: true
 
     val canDraw = isGameActive &&
             state.deck.isNotEmpty() &&
-            state.lastDrawDate != LocalDate.now() &&
-            !isFrozen
+            state.lastDrawTime != LocalDate.now() &&
+            !isFrozen &&
+            intervalHasPassed
 
     Scaffold(
         modifier = modifier,
@@ -87,7 +99,7 @@ fun GameScreen(
 
                     Spacer(modifier = Modifier.width(4.dp))
 
-                    Text(if (isFrozen && state.freezeEndsOn != null) "Frozen Until ${state.freezeEndsOn.toUKFormat()}" else "Draw Card")
+                    Text(if (isFrozen && state.freezeEndsAt != null) "Frozen Until ${state.freezeEndsAt.toUKFormat()}" else "Draw Card")
                 }
 
                 OutlinedButton(
@@ -112,12 +124,12 @@ fun GameScreen(
             item {
                 if (isGameActive) {
                     Text(
-                        text = "Days Remaining",
+                        text = "Time Remaining",
                         style = MaterialTheme.typography.titleMedium
                     )
 
                     Text(
-                        text = state.remainingDays.toString(),
+                        text = game.state.remainingMinutes.minutes.toDisplayText(),
                         style = MaterialTheme.typography.displayLarge
                     )
                 } else {
@@ -199,6 +211,7 @@ fun GameScreen(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(showBackground = true)
 @Composable
 private fun GameScreenPreview() {
@@ -206,7 +219,7 @@ private fun GameScreenPreview() {
         id = 12,
         name = "No Chocolate",
         state = GameState(
-            remainingDays = 24,
+            remainingMinutes = (12.days + 3.hours + 43.minutes).inWholeMinutes,
             deck = listOf(
                 CardType.GREEN,
                 CardType.RED,
@@ -229,10 +242,12 @@ private fun GameScreenPreview() {
                 CardType.ARCTIC,
             ),
             lastDrawnCard = CardType.DOUBLE,
-            lastDrawDate = LocalDate.now().minusDays(1),
-            freezeEndsOn = null
+            lastDrawTime = Clock.System.now() - 3.days,
+            freezeEndsAt = null
         ),
-        createdDate = LocalDate.now().minusDays(3)
+        createdDate = Clock.System.now() - 3.days,
+        baseTimer = 10.days,
+        drawInterval = 15.minutes
     )
 
     MaterialTheme {
@@ -244,6 +259,7 @@ private fun GameScreenPreview() {
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(showBackground = true)
 @Composable
 private fun GameScreenFrozenPreview() {
@@ -251,7 +267,7 @@ private fun GameScreenFrozenPreview() {
         id = 12,
         name = "No Chocolate",
         state = GameState(
-            remainingDays = 24,
+            remainingMinutes = (3.hours + 43.minutes).inWholeMinutes,
             deck = listOf(
                 CardType.GREEN,
                 CardType.RED,
@@ -269,10 +285,12 @@ private fun GameScreenFrozenPreview() {
                 CardType.ARCTIC,
             ),
             lastDrawnCard = CardType.FREEZE,
-            lastDrawDate = LocalDate.now(),
-            freezeEndsOn = LocalDate.now().plusDays(3)
+            lastDrawTime = Clock.System.now(),
+            freezeEndsAt = Clock.System.now() + 3.days
         ),
-        createdDate = LocalDate.now().minusDays(13)
+        createdDate = Clock.System.now() - 13.days,
+        baseTimer = 10.days,
+        drawInterval = 15.minutes
     )
 
     MaterialTheme {
@@ -284,6 +302,7 @@ private fun GameScreenFrozenPreview() {
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(showBackground = true)
 @Composable
 private fun GameScreenCompletedPreview() {
@@ -291,7 +310,7 @@ private fun GameScreenCompletedPreview() {
         id = 12,
         name = "No Chocolate",
         state = GameState(
-            remainingDays = 24,
+            remainingMinutes = (43.minutes).inWholeMinutes,
             deck = listOf(
                 CardType.GREEN,
                 CardType.RED,
@@ -309,11 +328,13 @@ private fun GameScreenCompletedPreview() {
                 CardType.ARCTIC,
             ),
             lastDrawnCard = CardType.DOUBLE,
-            lastDrawDate = LocalDate.now().minusDays(1),
-            freezeEndsOn = null
+            lastDrawTime = Clock.System.now() - 1.days,
+            freezeEndsAt = null
         ),
-        createdDate = LocalDate.now().minusDays(112),
-        status = GameStatus.COMPLETED
+        createdDate = Clock.System.now() - 112.days,
+        status = GameStatus.COMPLETED,
+        baseTimer = 10.days,
+        drawInterval = 15.minutes
     )
 
     MaterialTheme {

@@ -1,12 +1,13 @@
 package com.cbmedia.discipline.model
 
-import java.time.LocalDate
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
-data class GameState(
-    val remainingDays: Int,
+data class GameState @OptIn(ExperimentalTime::class) constructor(
+    val remainingMinutes: Long,
     val deck: List<CardType>,
     val discardPile: List<CardType>,
     val lastDrawnCard: CardType? = null,
-    val lastDrawDate: LocalDate? = null,
-    val freezeEndsOn: LocalDate? = null
+    val lastDrawTime: Instant? = null,
+    val freezeEndsAt: Instant? = null
 )

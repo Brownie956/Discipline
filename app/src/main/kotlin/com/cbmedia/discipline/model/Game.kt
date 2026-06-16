@@ -1,12 +1,16 @@
 package com.cbmedia.discipline.model
 
-import java.time.LocalDate
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
-data class Game(
+data class Game @OptIn(ExperimentalTime::class) constructor(
     val id: Long,
     val name: String,
     val state: GameState,
-    val createdDate: LocalDate,
+    val createdDate: Instant,
+    val baseTimer: Duration,
+    val drawInterval: Duration,
     val status: GameStatus = GameStatus.ACTIVE,
-    val endedDate: LocalDate? = null
+    val endedDate: Instant? = null,
 )

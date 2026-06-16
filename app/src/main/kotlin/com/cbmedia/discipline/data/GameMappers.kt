@@ -5,39 +5,47 @@ import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameState
 import com.cbmedia.discipline.model.GameStatus
-import java.time.LocalDate
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 fun Game.toEntity(): GameEntity {
     return GameEntity(
         id = id,
         name = name,
-        remainingDays = state.remainingDays,
+        remainingMinutes = state.remainingMinutes,
         deck = state.deck.joinToString(",") { it.name },
         discardPile = state.discardPile.joinToString(",") { it.name },
         lastDrawnCard = state.lastDrawnCard?.name,
-        lastDrawDate = state.lastDrawDate?.toEpochDay(),
-        freezeEndsOn = state.freezeEndsOn?.toEpochDay(),
-        createdDate = createdDate.toEpochDay(),
+        lastDrawTime = state.lastDrawTime?.toEpochMilliseconds(),
+        freezeEndsAt = state.freezeEndsAt?.toEpochMilliseconds(),
+        createdDate = createdDate.toEpochMilliseconds(),
         status = status.name,
-        endedDate = endedDate?.toEpochDay()
+        endedDate = endedDate?.toEpochMilliseconds(),
+        baseTimerMinutes = baseTimer.inWholeMinutes,
+        drawIntervalMinutes = drawInterval.inWholeMinutes
     )
 }
 
+@OptIn(ExperimentalTime::class)
 fun GameEntity.toGame(): Game {
     return Game(
         id = id,
         name = name,
         state = GameState(
-            remainingDays = remainingDays,
+            remainingMinutes = remainingMinutes,
             deck = deck.toCardList(),
             discardPile = discardPile.toCardList(),
             lastDrawnCard = lastDrawnCard?.let(CardType::valueOf),
-            lastDrawDate = lastDrawDate?.let(LocalDate::ofEpochDay),
-            freezeEndsOn = freezeEndsOn?.let(LocalDate::ofEpochDay)
+            lastDrawTime = lastDrawTime?.let(Instant::fromEpochMilliseconds),
+            freezeEndsAt = freezeEndsAt?.let(Instant::fromEpochMilliseconds)
         ),
-        createdDate = LocalDate.ofEpochDay(createdDate),
+        createdDate = Instant.fromEpochMilliseconds(createdDate),
         status = GameStatus.valueOf(status),
-        endedDate = endedDate?.let(LocalDate::ofEpochDay)
+        endedDate = endedDate?.let(Instant::fromEpochMilliseconds),
+        baseTimer = baseTimerMinutes.minutes,
+        drawInterval = drawIntervalMinutes.minutes
     )
 }
 

@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class GameViewModel(
     private val repository: GameRepository
@@ -43,18 +46,19 @@ class GameViewModel(
         _gameId.value = gameId
     }
 
+    @OptIn(ExperimentalTime::class)
     fun drawCard() {
         val currentGame = game.value ?: return
 
         viewModelScope.launch {
-            val result = GameEngine.drawCard(currentGame.state)
+            val result = GameEngine.drawCard(currentGame)
             val updatedState = result.newState
 
-            val updatedGame = if (updatedState.remainingDays <= 0) {
+            val updatedGame = if (updatedState.remainingMinutes <= 0) {
                 currentGame.copy(
-                    state = updatedState.copy(remainingDays = 0),
+                    state = updatedState.copy(remainingMinutes = 0),
                     status = GameStatus.COMPLETED,
-                    endedDate = LocalDate.now()
+                    endedDate = Clock.System.now()
                 )
             } else {
                 currentGame.copy(
@@ -66,6 +70,7 @@ class GameViewModel(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     fun endGameEarly() {
         val currentGame = game.value ?: return
 
@@ -73,7 +78,7 @@ class GameViewModel(
             repository.updateGame(
                 currentGame.copy(
                     status = GameStatus.ABANDONED,
-                    endedDate = LocalDate.now()
+                    endedDate = Clock.System.now()
                 )
             )
         }

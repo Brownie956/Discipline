@@ -30,9 +30,15 @@ import com.cbmedia.discipline.IceText
 import com.cbmedia.discipline.isGameFrozen
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.GameSummary
+import com.cbmedia.discipline.toDisplayText
 import com.cbmedia.discipline.toUKFormat
 import java.time.LocalDate
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun GameSummaryCard(
     game: GameSummary,
@@ -40,7 +46,7 @@ fun GameSummaryCard(
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isFrozen = isGameFrozen(game.freezeEndsOn)
+    val isFrozen = isGameFrozen(game.freezeEndsAt)
 
     Card(
         onClick = onClick,
@@ -95,7 +101,7 @@ fun GameSummaryCard(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = "${game.remainingDays} days remaining",
+                text = "${game.remainingTime.toDisplayText()} remaining",
                 style = MaterialTheme.typography.headlineSmall
             )
 
@@ -118,11 +124,11 @@ fun GameSummaryCard(
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            if (isFrozen && game.freezeEndsOn != null) {
+            if (isFrozen && game.freezeEndsAt != null) {
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = "Frozen until ${game.freezeEndsOn.toUKFormat()}",
+                    text = "Frozen until ${game.freezeEndsAt.toUKFormat()}",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -157,6 +163,7 @@ fun EmptyGamesSummaryCard(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(showBackground = true)
 @Composable
 fun GamesSummaryCardPreview() {
@@ -164,11 +171,11 @@ fun GamesSummaryCardPreview() {
         game = GameSummary(
             id = 1,
             name = "Example Game",
-            remainingDays = 10,
+            remainingTime = 10.days,
             deckCount = 30,
             discardCount = 4,
             lastDrawnCard = CardType.ARCTIC,
-            freezeEndsOn = null,
+            freezeEndsAt = null,
             totalDays = 4
         ),
         onClick = {},
@@ -176,6 +183,7 @@ fun GamesSummaryCardPreview() {
     )
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(showBackground = true)
 @Composable
 fun GamesSummaryCardFrozenPreview() {
@@ -183,11 +191,11 @@ fun GamesSummaryCardFrozenPreview() {
         game = GameSummary(
             id = 1,
             name = "Example Game",
-            remainingDays = 10,
+            remainingTime = 10.days + 5.hours,
             deckCount = 30,
             discardCount = 4,
             lastDrawnCard = CardType.ARCTIC,
-            freezeEndsOn = LocalDate.now().plusDays(3),
+            freezeEndsAt = Clock.System.now() + 3.days,
             totalDays = 10
         ),
         onClick = {},

@@ -10,8 +10,13 @@ import com.cbmedia.discipline.data.GameRepository
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.Game
 import com.cbmedia.discipline.model.GameMode
+import com.cbmedia.discipline.timerToMinutes
+import com.cbmedia.discipline.toUKFormat
+import com.cbmedia.discipline.ui.components.TimerUnit
 import kotlinx.coroutines.launch
-import java.time.LocalDate
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 
 class ConfigViewModel(
     private val repository: GameRepository
@@ -25,7 +30,16 @@ class ConfigViewModel(
     var gameName by mutableStateOf("")
         private set
 
-    var baseDays by mutableStateOf("30")
+    var baseTimerAmount by mutableStateOf("30")
+        private set
+
+    var baseTimerUnit by mutableStateOf(TimerUnit.DAYS)
+        private set
+
+    var drawIntervalAmount by mutableStateOf("1")
+        private set
+
+    var drawIntervalUnit by mutableStateOf(TimerUnit.DAYS)
         private set
 
     var useCardCountAsBaseDays by mutableStateOf(false)
@@ -38,15 +52,27 @@ class ConfigViewModel(
         get() = if (useCardCountAsBaseDays) {
             totalSelectedCards
         } else {
-            baseDays.toIntOrNull()?.coerceAtLeast(1) ?: 1
+            baseTimerAmount.toIntOrNull()?.coerceAtLeast(1) ?: 1
         }
 
     fun updateGameName(name: String) {
         gameName = name
     }
 
-    fun updateBaseDays(value: String) {
-        baseDays = value.filter { it.isDigit() }
+    fun updateBaseTimerAmount(value: String) {
+        baseTimerAmount = value.filter { it.isDigit() }
+    }
+
+    fun updateBaseTimerUnit(unit: TimerUnit) {
+        baseTimerUnit = unit
+    }
+
+    fun updateDrawIntervalAmount(value: String) {
+        drawIntervalAmount = value.filter { it.isDigit() }
+    }
+
+    fun updateDrawIntervalUnit(unit: TimerUnit) {
+        drawIntervalUnit = unit
     }
 
     fun updateUseCardCountAsBaseDays(checked: Boolean) {
@@ -69,20 +95,31 @@ class ConfigViewModel(
         cardCounts = mode.cardCounts
     }
 
+    @OptIn(ExperimentalTime::class)
     fun createGame(
         onGameCreated: (Long) -> Unit
     ) {
         viewModelScope.launch {
+            val baseTimerMinutes = if (useCardCountAsBaseDays) {
+                totalSelectedCards.toLong() * TimerUnit.DAYS.minutesMultiplier
+            } else {
+                timerToMinutes(baseTimerAmount, baseTimerUnit)
+            }
+
+            val drawIntervalMinutes = timerToMinutes(drawIntervalAmount, drawIntervalUnit)
+
             val game = Game(
                 id = 0,
                 name = gameName.ifBlank {
-                    "Game ${LocalDate.now()}"
+                    Clock.System.now().toUKFormat()
                 },
                 state = GameEngine.startGame(
-                    baseDays = resolvedBaseDays,
+                    baseTimerMinutes = baseTimerMinutes,
                     cardCounts = cardCounts
                 ),
-                createdDate = LocalDate.now()
+                createdDate = Clock.System.now(),
+                baseTimer = baseTimerMinutes.minutes,
+                drawInterval = drawIntervalMinutes.minutes,
             )
 
             val gameId = repository.createGame(game)

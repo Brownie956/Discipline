@@ -28,6 +28,12 @@ import com.cbmedia.discipline.model.GameSummary
 import com.cbmedia.discipline.ui.components.EmptyGamesSummaryCard
 import com.cbmedia.discipline.ui.components.GameSummaryCard
 import java.time.LocalDate
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun HomeScreen(
@@ -164,6 +170,7 @@ fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
@@ -173,21 +180,21 @@ private fun HomeScreenPreview() {
                 GameSummary(
                     id = 1,
                     name = "Main Game",
-                    remainingDays = 24,
+                    remainingTime = 24.days + 6.hours,
                     deckCount = 38,
                     discardCount = 6,
                     lastDrawnCard = CardType.DOUBLE,
-                    freezeEndsOn = null,
+                    freezeEndsAt = null,
                     totalDays = 5
                 ),
                 GameSummary(
                     id = 2,
                     name = "Hard Mode",
-                    remainingDays = 41,
+                    remainingTime = 24.days + 6.hours + 2.minutes,
                     deckCount = 52,
                     discardCount = 9,
                     lastDrawnCard = CardType.FREEZE,
-                    freezeEndsOn = LocalDate.now().plusDays(3),
+                    freezeEndsAt = Clock.System.now() + 3.days,
                     totalDays = 117
                 )
             ),
@@ -195,11 +202,11 @@ private fun HomeScreenPreview() {
                 GameSummary(
                     id = 3,
                     name = "Completed Game",
-                    remainingDays = 0,
+                    remainingTime = 0.days,
                     deckCount = 38,
                     discardCount = 6,
                     lastDrawnCard = CardType.DOUBLE,
-                    freezeEndsOn = null,
+                    freezeEndsAt = null,
                     totalDays = 15
                 ),
             ),
@@ -207,11 +214,11 @@ private fun HomeScreenPreview() {
                 GameSummary(
                     id = 4,
                     name = "Abandoned Game",
-                    remainingDays = 0,
+                    remainingTime = 0.days,
                     deckCount = 38,
                     discardCount = 6,
                     lastDrawnCard = CardType.DOUBLE,
-                    freezeEndsOn = null,
+                    freezeEndsAt = null,
                     totalDays = 155
                 ),
             ),

@@ -31,13 +31,21 @@ import androidx.compose.ui.unit.dp
 import com.cbmedia.discipline.model.CardType
 import com.cbmedia.discipline.model.GameMode
 import com.cbmedia.discipline.ui.components.CardCountSelector
+import com.cbmedia.discipline.ui.components.TimerInput
+import com.cbmedia.discipline.ui.components.TimerUnit
 
 @Composable
 fun ConfigScreen(
     gameName: String,
     onGameNameChanged: (String) -> Unit,
-    baseDays: String,
-    onBaseDaysChanged: (String) -> Unit,
+    baseTimerAmount: String,
+    baseTimerUnit: TimerUnit,
+    onBaseTimerAmountChanged: (String) -> Unit,
+    onBaseTimerUnitChanged: (TimerUnit) -> Unit,
+    drawIntervalAmount: String,
+    drawIntervalUnit: TimerUnit,
+    onDrawIntervalAmountChanged: (String) -> Unit,
+    onDrawIntervalUnitChanged: (TimerUnit) -> Unit,
     useCardCountAsBaseDays: Boolean,
     onUseCardCountAsBaseDaysChanged: (Boolean) -> Unit,
     totalSelectedCards: Int,
@@ -110,31 +118,32 @@ fun ConfigScreen(
             }
 
             item {
-                OutlinedTextField(
-                    value = if (useCardCountAsBaseDays) {
+                TimerInput(
+                    label = "Base timer",
+                    amountText = if (useCardCountAsBaseDays) {
                         totalSelectedCards.toString()
                     } else {
-                        baseDays
+                        baseTimerAmount
                     },
-                    onValueChange = onBaseDaysChanged,
-                    enabled = !useCardCountAsBaseDays,
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("Base Days")
+                    selectedUnit = if (useCardCountAsBaseDays) {
+                        TimerUnit.DAYS
+                    } else {
+                        baseTimerUnit
                     },
-                    placeholder = {
-                        Text("30")
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    supportingText = {
-                        if (!useCardCountAsBaseDays && (baseDays.toIntOrNull() ?: 0) < 1) {
-                            Text("Base days must be at least 1")
-                        }
-                    },
-                    isError = !useCardCountAsBaseDays && (baseDays.toIntOrNull() ?: 0) < 1
+                    onAmountChange = onBaseTimerAmountChanged,
+                    onUnitChange = onBaseTimerUnitChanged,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item {
+                TimerInput(
+                    label = "Interval timer",
+                    amountText = drawIntervalAmount,
+                    selectedUnit = drawIntervalUnit,
+                    onAmountChange = onDrawIntervalAmountChanged,
+                    onUnitChange = onDrawIntervalUnitChanged,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -273,8 +282,6 @@ private fun ConfigScreenPreview() {
         ConfigScreen(
             gameName = "Give up caffeine",
             onGameNameChanged = {},
-            baseDays = "30",
-            onBaseDaysChanged = {},
             useCardCountAsBaseDays = false,
             onUseCardCountAsBaseDaysChanged = {},
             totalSelectedCards = sampleCounts.values.sum(),
@@ -282,7 +289,16 @@ private fun ConfigScreenPreview() {
             onSetDefaultCardCounts = {},
             onIncrement = {},
             onDecrement = {},
-            onStartGame = {}
+            onStartGame = {},
+            baseTimerAmount = "30",
+            baseTimerUnit = TimerUnit.DAYS,
+            onBaseTimerAmountChanged = {},
+            onBaseTimerUnitChanged = {},
+            drawIntervalAmount = "15",
+            drawIntervalUnit = TimerUnit.MINUTES,
+            onDrawIntervalAmountChanged = {},
+            onDrawIntervalUnitChanged = {},
+            modifier = Modifier
         )
     }
 }

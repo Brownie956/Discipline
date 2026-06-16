@@ -2,6 +2,7 @@ package com.cbmedia.discipline.model
 
 import java.time.temporal.ChronoUnit
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
 
 object CardRules {
     const val GREEN_DAY_SUBTRACT = 1
@@ -42,8 +43,9 @@ fun CardType.describeLastDraw(state: GameState): String = when (this) {
     }
 }
 
+@OptIn(ExperimentalTime::class)
 private fun GameState.lastFreezeDays(): Int? {
-    val end = freezeEndsOn ?: return null
-    val start = lastDrawDate ?: return null
-    return ChronoUnit.DAYS.between(start, end).toInt()
+    val end = freezeEndsAt ?: return null
+    val start = lastDrawTime ?: return null
+    return start.minus(end).inWholeDays.toInt()
 }
